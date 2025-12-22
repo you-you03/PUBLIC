@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Screenshot Annotator</title>
+    <link rel="stylesheet" href="editor.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="brand">
+            <span class="brand-dot" aria-hidden="true"></span>
+            <div class="brand-title">Annotator</div>
+          </div>
+        </div>
+      </header>
+
+      <main class="canvas-wrap">
+        <div class="canvas-stage" id="canvas-stage">
+          <div class="canvas-card">
+            <canvas id="canvas"></canvas>
+          </div>
+        </div>
+      </main>
+
+      <aside class="sidebar" aria-label="Inspector">
+        <div class="sidebar-header">
+          <div class="brand-subtitle" id="capture-meta">Loading capture...</div>
+          <div class="file-name" id="file-name">--</div>
+        </div>
+        
+        <div class="sidebar-actions">
+          <div class="undo-redo-controls">
+            <button class="btn ghost" id="undo-btn" type="button" title="Undo (Ctrl+Z)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 7v6h6"/>
+                <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+              </svg>
+              <span>Undo</span>
+            </button>
+            <button class="btn ghost" id="redo-btn" type="button" title="Redo (Ctrl+Shift+Z)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 7v6h-6"/>
+                <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/>
+              </svg>
+              <span>Redo</span>
+            </button>
+          </div>
+          <div class="zoom-controls" aria-label="Zoom">
+            <button class="btn ghost small" id="zoom-out-btn" type="button">
+              -
+            </button>
+            <button class="btn ghost small" id="zoom-reset-btn" type="button">
+              100%
+            </button>
+            <button class="btn ghost small" id="zoom-in-btn" type="button">
+              +
+            </button>
+          </div>
+          <button class="btn primary" id="save-btn" type="button">
+            Export PNG
+          </button>
+        </div>
+
+        <div class="panel-group color-group" id="panel-color-group">
+          <div class="panel-header">
+            <h3>Color</h3>
+          </div>
+          <div class="color-controls">
+            <div class="color-item" id="color-stroke-item">
+              <label class="color-label">Stroke</label>
+              <button class="color-current" id="color-stroke-btn" type="button">
+                <span class="color-preview" id="color-stroke-preview"></span>
+                <span class="color-value" id="color-stroke-value">#E03E3E</span>
+              </button>
+              <div class="color-popover hidden" id="color-stroke-popover">
+                <div class="color-grid" id="color-stroke-swatches"></div>
+                <div class="color-popover-actions">
+                  <button class="btn ghost small" id="color-stroke-custom-btn" type="button">
+                    Custom...
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="color-item" id="color-fill-item">
+              <label class="color-label">Fill</label>
+              <button class="color-current" id="color-fill-btn" type="button">
+                <span class="color-preview transparent" id="color-fill-preview"></span>
+                <span class="color-value" id="color-fill-value">None</span>
+              </button>
+              <div class="color-popover hidden" id="color-fill-popover">
+                <div class="color-grid" id="color-fill-swatches"></div>
+                <div class="color-popover-actions">
+                  <button class="btn ghost small" id="color-fill-none-btn" type="button">
+                    No Fill
+                  </button>
+                  <button class="btn ghost small" id="color-fill-custom-btn" type="button">
+                    Custom...
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="color-item" id="color-text-item">
+              <label class="color-label">Text</label>
+              <button class="color-current" id="color-text-btn" type="button">
+                <span class="color-preview" id="color-text-preview"></span>
+                <span class="color-value" id="color-text-value">#E03E3E</span>
+              </button>
+              <div class="color-popover hidden" id="color-text-popover">
+                <div class="color-grid" id="color-text-swatches"></div>
+                <div class="color-popover-actions">
+                  <button class="btn ghost small" id="color-text-custom-btn" type="button">
+                    Custom...
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-group size-group" id="panel-size-group">
+          <div class="panel" id="panel-stroke">
+            <div class="panel-header">
+              <h3>Stroke</h3>
+            </div>
+            <label class="field">
+              <span>Width</span>
+              <div class="range-row">
+                <input
+                  id="stroke-width"
+                  type="range"
+                  min="1"
+                  max="20"
+                  value="3"
+                />
+                <input
+                  id="stroke-width-number"
+                  type="number"
+                  min="1"
+                  max="20"
+                  value="3"
+                />
+              </div>
+            </label>
+            <label class="field" id="arrow-head-field">
+              <span>Arrow Head</span>
+              <div class="range-row">
+                <input
+                  id="arrow-head"
+                  type="range"
+                  min="6"
+                  max="30"
+                  value="14"
+                />
+                <input
+                  id="arrow-head-number"
+                  type="number"
+                  min="6"
+                  max="30"
+                  value="14"
+                />
+              </div>
+            </label>
+          </div>
+          <div class="panel" id="panel-marker">
+            <div class="panel-header">
+              <h3>Marker</h3>
+            </div>
+            <label class="field">
+              <span>Width</span>
+              <div class="range-row">
+                <input
+                  id="marker-width"
+                  type="range"
+                  min="4"
+                  max="64"
+                  value="32"
+                />
+                <input
+                  id="marker-width-number"
+                  type="number"
+                  min="4"
+                  max="64"
+                  value="32"
+                />
+              </div>
+            </label>
+            <label class="field">
+              <span>Opacity</span>
+              <div class="range-row">
+                <input
+                  id="marker-opacity"
+                  type="range"
+                  min="10"
+                  max="100"
+                  value="64"
+                />
+                <input
+                  id="marker-opacity-number"
+                  type="number"
+                  min="10"
+                  max="100"
+                  value="64"
+                />
+              </div>
+            </label>
+          </div>
+          <div class="panel" id="panel-text">
+            <div class="panel-header">
+              <h3>Text</h3>
+            </div>
+            <label class="field">
+              <span>Content</span>
+              <textarea
+                id="text-content"
+                class="text-content-input"
+                rows="3"
+                placeholder="Enter text..."
+              ></textarea>
+            </label>
+            <label class="field">
+              <span>Size</span>
+              <div class="range-row">
+                <input id="text-size" type="range" min="8" max="72" value="40" />
+                <input
+                  id="text-size-number"
+                  type="number"
+                  min="8"
+                  max="72"
+                  value="40"
+                />
+              </div>
+            </label>
+            <label class="field">
+              <div class="checkbox-row">
+                <input id="text-bold" type="checkbox" />
+                <span>Bold</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </aside>
+
+      <aside class="toolbar" aria-label="Toolbar">
+        <div class="toolbar-group tool-group" aria-label="Objects">
+          <button
+            class="tool active"
+            data-tool="select"
+            type="button"
+            title="Select (V)"
+          >
+            <span class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M5 3l12 6-6 2 4 8-2 1-4-8-4 4z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+            <span class="tool-label">Select</span>
+            <span class="tool-key">V</span>
+          </button>
+          <button class="tool" data-tool="rect" type="button" title="Rectangle (R)">
+            <span class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <rect
+                  x="4"
+                  y="6"
+                  width="16"
+                  height="12"
+                  rx="2"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                />
+              </svg>
+            </span>
+            <span class="tool-label">Rect</span>
+            <span class="tool-key">R</span>
+          </button>
+          <button
+            class="tool"
+            data-tool="ellipse"
+            type="button"
+            title="Ellipse (O)"
+          >
+            <span class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <ellipse
+                  cx="12"
+                  cy="12"
+                  rx="7"
+                  ry="5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                />
+              </svg>
+            </span>
+            <span class="tool-label">Ellipse</span>
+            <span class="tool-key">O</span>
+          </button>
+          <button class="tool" data-tool="arrow" type="button" title="Arrow (A)">
+            <span class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M5 17L17 7"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M13 7h4v4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="tool-label">Arrow</span>
+            <span class="tool-key">A</span>
+          </button>
+          <button class="tool" data-tool="marker" type="button" title="Marker (M)">
+            <span class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M4 16l6-6 4 4-6 6H4z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 6l2-2 4 4-2 2"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="tool-label">Marker</span>
+            <span class="tool-key">M</span>
+          </button>
+          <button class="tool" data-tool="text" type="button" title="Text (T)">
+            <span class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M6 8h12M6 12h8M6 16h10"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span class="tool-label">Text</span>
+            <span class="tool-key">T</span>
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+
+    <div class="modal hidden" id="color-modal" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <div class="modal-title">Custom color</div>
+            <div class="modal-subtitle">Paste a HEX value or pick a shade.</div>
+          </div>
+          <div class="modal-swatch" id="color-modal-preview"></div>
+        </div>
+        <div class="modal-body">
+          <label class="field compact">
+            <span>Picker</span>
+            <input id="color-picker" type="color" value="#ff3b30" />
+          </label>
+          <label class="field compact">
+            <span>HEX</span>
+            <input id="color-hex" type="text" value="#ff3b30" />
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn ghost small" id="color-cancel" type="button">
+            Cancel
+          </button>
+          <button class="btn primary small" id="color-apply" type="button">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="editor.js"></script>
+  </body>
+</html>

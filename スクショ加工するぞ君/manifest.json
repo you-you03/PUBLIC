@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Screenshot Annotator",
+  "version": "0.1.0",
+  "description": "Capture the visible tab, annotate with shapes and text, then save PNG.",
+  "action": {
+    "default_title": "Capture and annotate"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "downloads",
+    "storage",
+    "scripting",
+    "contextMenus"
+  ],
+  "commands": {
+    "capture-visible": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Capture visible tab and open editor"
+    },
+    "capture-region": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+U",
+        "mac": "Command+Shift+U"
+      },
+      "description": "Capture a selected region"
+    }
+  }
+}

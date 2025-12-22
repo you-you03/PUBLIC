@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneTime Extensions</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>Batch Web Clipper (Local MVP)</h1>
+        <p>複数URLを読み込み、Markdownファイル（ZIP）をローカルにダウンロードします。</p>
+      </header>
+
+      <form id="clip-form" class="card">
+        <label class="field">
+          <span class="field-label">URLリスト（1行1URL）</span>
+          <textarea
+            id="url-input"
+            placeholder="https://example.com/article-1&#10;https://example.com/article-2"
+          ></textarea>
+        </label>
+
+        <label class="field">
+          <span class="field-label">タグ（カンマ・スペース区切り）</span>
+          <input
+            id="tags-input"
+            type="text"
+            placeholder="research, clipping"
+          />
+        </label>
+
+        <div class="actions">
+          <button id="submit-button" type="submit">Markdownを生成</button>
+          <p class="hint">最大50 URL。処理時間はサイトにより数秒かかる場合があります。</p>
+        </div>
+      </form>
+
+      <div id="error-box" class="error hidden"></div>
+
+      <section id="results-section" class="card hidden">
+        <div class="results-header">
+          <div>
+            <h2>処理結果</h2>
+            <p class="stats" id="stats-label">成功 0 件 / 失敗 0 件</p>
+          </div>
+          <a
+            id="download-link"
+            class="download hidden"
+            href="#"
+            download="clips.zip"
+          >ZIPをダウンロード</a>
+        </div>
+        <ul id="result-list" class="result-list"></ul>
+      </section>
+    </div>
+
+    <script src="libs/Readability.js"></script>
+    <script src="libs/turndown.js"></script>
+    <script src="libs/turndown-plugin-gfm.js"></script>
+    <script src="libs/jszip.min.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

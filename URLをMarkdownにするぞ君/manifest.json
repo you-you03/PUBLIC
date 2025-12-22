@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "OneTime Extensions",
+  "version": "0.1.0",
+  "description": "Batch Web ClipperをChrome拡張機能として実行します。",
+  "action": {},
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
+}
