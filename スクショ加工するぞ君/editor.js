@@ -1144,15 +1144,37 @@ function renderColorSwatches(target) {
   });
 }
 
+function getColorPopover(target) {
+  return target === "stroke"
+    ? colorStrokePopover
+    : target === "fill"
+      ? colorFillPopover
+      : colorTextPopover;
+}
+
+function isAnyColorPopoverOpen() {
+  return (
+    !colorStrokePopover.classList.contains("hidden") ||
+    !colorFillPopover.classList.contains("hidden") ||
+    !colorTextPopover.classList.contains("hidden")
+  );
+}
+
 function openColorPopover(target) {
   renderColorSwatches(target);
-  const popover = target === "stroke" ? colorStrokePopover : target === "fill" ? colorFillPopover : colorTextPopover;
+  const popover = getColorPopover(target);
   const trigger =
     target === "stroke"
       ? colorStrokeBtn
       : target === "fill"
         ? colorFillBtn
         : colorTextBtn;
+
+  // 初回のみ body 直下に移動し、親のoverflow影響を避ける
+  if (!popover.dataset.portalized) {
+    document.body.appendChild(popover);
+    popover.dataset.portalized = "true";
+  }
 
   // トリガーの位置に応じて画面全体にオーバーレイ表示する
   const rect = trigger.getBoundingClientRect();
@@ -1171,7 +1193,7 @@ function openColorPopover(target) {
 
 function closeColorPopover(target) {
   if (target) {
-    const popover = target === "stroke" ? colorStrokePopover : target === "fill" ? colorFillPopover : colorTextPopover;
+    const popover = getColorPopover(target);
     popover.classList.add("hidden");
   } else {
     colorStrokePopover.classList.add("hidden");
@@ -1181,7 +1203,7 @@ function closeColorPopover(target) {
 }
 
 function toggleColorPopover(target) {
-  const popover = target === "stroke" ? colorStrokePopover : target === "fill" ? colorFillPopover : colorTextPopover;
+  const popover = getColorPopover(target);
   if (popover.classList.contains("hidden")) {
     closeColorPopover(); // 他のポップオーバーを閉じる
     openColorPopover(target);
@@ -1985,7 +2007,12 @@ colorModal.addEventListener("click", (event) => {
 });
 
 window.addEventListener("click", (event) => {
-  if (!colorGroup.contains(event.target)) {
+  if (
+    !colorGroup.contains(event.target) &&
+    !colorStrokePopover.contains(event.target) &&
+    !colorFillPopover.contains(event.target) &&
+    !colorTextPopover.contains(event.target)
+  ) {
     closeColorPopover();
   }
 });
@@ -2136,7 +2163,7 @@ window.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "Escape") {
-    if (!colorPopover.classList.contains("hidden")) {
+    if (isAnyColorPopoverOpen()) {
       closeColorPopover();
       return;
     }
