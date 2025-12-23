@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "OneTime Extensions",
+  "name": "URLをMarkdownにするぞ君",
   "version": "0.1.0",
-  "description": "Batch Web ClipperをChrome拡張機能として実行します。",
+  "description": "開いているWebページをMarkdownに変換して保存します。",
   "action": {},
   "background": {
     "service_worker": "background.js"

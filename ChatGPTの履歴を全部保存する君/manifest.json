@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "ChatGPT Markdown Exporter",
-  "description": "Export the current ChatGPT conversation to Markdown (Downloads root).",
+  "name": "ChatGPTの履歴を全部保存する君",
+  "description": "ChatGPTの会話をMarkdownでダウンロードします。",
   "version": "0.2.0",
   "permissions": [
     "downloads",
@@ -16,7 +16,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Export ChatGPT Conversation"
+    "default_title": "ChatGPTの履歴を保存"
   },
   "content_scripts": [
     {

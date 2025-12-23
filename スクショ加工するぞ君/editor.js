@@ -14,7 +14,8 @@ const COLOR_SWATCHES = [
   "#AD1A72", // Pink
 ];
 const COLOR_TARGETS = ["stroke", "fill", "text"];
-const BASE_ZOOM = 0.35;
+// 以前の150%表示を新たな100%として扱うため、基準倍率を上げる
+const BASE_ZOOM = 0.525;
 const MARKER_WIDTH_MIN = 4;
 const MARKER_WIDTH_MAX = 64;
 const MARKER_OPACITY_MIN = 10;
@@ -1146,6 +1147,25 @@ function renderColorSwatches(target) {
 function openColorPopover(target) {
   renderColorSwatches(target);
   const popover = target === "stroke" ? colorStrokePopover : target === "fill" ? colorFillPopover : colorTextPopover;
+  const trigger =
+    target === "stroke"
+      ? colorStrokeBtn
+      : target === "fill"
+        ? colorFillBtn
+        : colorTextBtn;
+
+  // トリガーの位置に応じて画面全体にオーバーレイ表示する
+  const rect = trigger.getBoundingClientRect();
+  const margin = 8;
+  const minWidth = 240;
+  const width = Math.max(rect.width, minWidth);
+  const maxLeft = window.innerWidth - width - 12;
+  const left = Math.max(12, Math.min(rect.left, maxLeft));
+  const top = rect.bottom + margin;
+
+  popover.style.setProperty("--popover-left", `${left}px`);
+  popover.style.setProperty("--popover-top", `${top}px`);
+  popover.style.setProperty("--popover-width", `${width}px`);
   popover.classList.remove("hidden");
 }
 

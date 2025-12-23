@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Screenshot Annotator",
+  "name": "スクショ加工するぞ君",
   "version": "0.1.0",
-  "description": "Capture the visible tab, annotate with shapes and text, then save PNG.",
+  "description": "表示中のタブをキャプチャし、図形やテキストで加工してPNG保存します。",
   "action": {
-    "default_title": "Capture and annotate"
+    "default_title": "スクショを加工する"
   },
   "background": {
     "service_worker": "background.js"
@@ -23,14 +23,14 @@
         "default": "Ctrl+Shift+Y",
         "mac": "Command+Shift+Y"
       },
-      "description": "Capture visible tab and open editor"
+      "description": "表示中のタブをキャプチャしてエディタを開く"
     },
     "capture-region": {
       "suggested_key": {
         "default": "Ctrl+Shift+U",
         "mac": "Command+Shift+U"
       },
-      "description": "Capture a selected region"
+      "description": "選択範囲をキャプチャする"
     }
   }
 }
